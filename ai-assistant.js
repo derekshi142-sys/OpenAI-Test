@@ -21,13 +21,23 @@ class AIAssistant {
                 console.log('API key loaded from Netlify function');
             } else {
                 // Fallback to config for local development
-                this.apiKey = CONFIG.OPENAI_API_KEY;
-                console.log('Using API key from config (local development)');
+                if (typeof CONFIG !== 'undefined' && CONFIG.OPENAI_API_KEY) {
+                    this.apiKey = CONFIG.OPENAI_API_KEY;
+                    console.log('Using API key from config (local development)');
+                } else {
+                    console.error('CONFIG not defined or API key not found');
+                    this.apiKey = null;
+                }
             }
         } catch (error) {
             // Fallback to config for local development
-            this.apiKey = CONFIG.OPENAI_API_KEY;
-            console.log('Using API key from config (local development)');
+            if (typeof CONFIG !== 'undefined' && CONFIG.OPENAI_API_KEY) {
+                this.apiKey = CONFIG.OPENAI_API_KEY;
+                console.log('Using API key from config (local development)');
+            } else {
+                console.error('CONFIG not defined or API key not found:', error);
+                this.apiKey = null;
+            }
         }
     }
     
@@ -139,5 +149,8 @@ class AIAssistant {
 
 // Initialize the AI Assistant when the page loads
 document.addEventListener('DOMContentLoaded', () => {
-    new AIAssistant();
+    // Wait a bit to ensure all scripts are loaded
+    setTimeout(() => {
+        new AIAssistant();
+    }, 100);
 });
