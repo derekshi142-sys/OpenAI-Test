@@ -17,27 +17,27 @@ class AIAssistant {
             const response = await fetch('/.netlify/functions/get-api-key');
             if (response.ok) {
                 const data = await response.json();
-                this.apiKey = data.apiKey;
-                console.log('API key loaded from Netlify function');
-            } else {
-                // Fallback to config for local development
-                if (typeof CONFIG !== 'undefined' && CONFIG.OPENAI_API_KEY) {
-                    this.apiKey = CONFIG.OPENAI_API_KEY;
-                    console.log('Using API key from config (local development)');
+                if (data.apiKey) {
+                    this.apiKey = data.apiKey;
+                    console.log('API key loaded from Netlify function');
+                    return;
                 } else {
-                    console.error('CONFIG not defined or API key not found');
-                    this.apiKey = null;
+                    console.error('No API key in Netlify function response');
                 }
+            } else {
+                console.error('Netlify function returned error:', response.status);
             }
         } catch (error) {
-            // Fallback to config for local development
-            if (typeof CONFIG !== 'undefined' && CONFIG.OPENAI_API_KEY) {
-                this.apiKey = CONFIG.OPENAI_API_KEY;
-                console.log('Using API key from config (local development)');
-            } else {
-                console.error('CONFIG not defined or API key not found:', error);
-                this.apiKey = null;
-            }
+            console.error('Error calling Netlify function:', error);
+        }
+        
+        // Fallback to config for local development
+        if (typeof CONFIG !== 'undefined' && CONFIG.OPENAI_API_KEY) {
+            this.apiKey = CONFIG.OPENAI_API_KEY;
+            console.log('Using API key from config (local development)');
+        } else {
+            console.error('CONFIG not defined or API key not found');
+            this.apiKey = null;
         }
     }
     
