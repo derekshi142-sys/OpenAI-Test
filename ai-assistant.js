@@ -1,12 +1,34 @@
 class AIAssistant {
     constructor() {
-        this.apiKey = CONFIG.OPENAI_API_KEY;
+        // Initialize without API key first
+        this.apiKey = null;
         this.messages = document.getElementById('messages');
         this.userInput = document.getElementById('userInput');
         this.sendButton = document.getElementById('sendButton');
         this.loading = document.getElementById('loading');
         
         this.initializeEventListeners();
+        this.loadApiKey();
+    }
+    
+    async loadApiKey() {
+        try {
+            // Try to get API key from Netlify function first
+            const response = await fetch('/.netlify/functions/get-api-key');
+            if (response.ok) {
+                const data = await response.json();
+                this.apiKey = data.apiKey;
+                console.log('API key loaded from Netlify function');
+            } else {
+                // Fallback to config for local development
+                this.apiKey = CONFIG.OPENAI_API_KEY;
+                console.log('Using API key from config (local development)');
+            }
+        } catch (error) {
+            // Fallback to config for local development
+            this.apiKey = CONFIG.OPENAI_API_KEY;
+            console.log('Using API key from config (local development)');
+        }
     }
     
     initializeEventListeners() {
@@ -21,6 +43,16 @@ class AIAssistant {
     async sendMessage() {
         const message = this.userInput.value.trim();
         if (!message) return;
+        
+        // Check if API key is loaded
+        if (!this.apiKey) {
+            this.addMessage('Loading API key, please wait...', 'ai');
+            await this.loadApiKey();
+            if (!this.apiKey) {
+                this.addMessage('Error: API key not available. Please check your configuration.', 'ai');
+                return;
+            }
+        }
         
         // Add user message to chat
         this.addMessage(message, 'user');

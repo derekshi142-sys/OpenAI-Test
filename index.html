@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Profile Page</title>
+    <title>John Smith - Profile & AI Assistant</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -46,6 +46,50 @@
                 </div>
             </div>
         </div>
+        
+        <!-- AI Assistant Section -->
+        <div class="ai-assistant-card">
+            <div class="ai-header">
+                <h2>🤖 AI Assistant</h2>
+                <p>Ask me anything! I can answer general questions about dates, geography, facts, and more.</p>
+            </div>
+            
+            <div class="chat-container">
+                <div class="messages" id="messages">
+                    <div class="message ai-message">
+                        <div class="message-content">
+                            <p>Hello! I'm your AI assistant. Feel free to ask me any questions like:</p>
+                            <ul>
+                                <li>What date is today?</li>
+                                <li>Is Monaco in Europe?</li>
+                                <li>What's the capital of Japan?</li>
+                                <li>How many days are in February?</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="input-container">
+                    <div class="input-wrapper">
+                        <input type="text" id="userInput" placeholder="Ask me anything..." autocomplete="off">
+                        <button id="sendButton" class="send-btn">
+                            <span class="send-icon">➤</span>
+                        </button>
+                    </div>
+                    <div class="loading" id="loading" style="display: none;">
+                        <div class="loading-dots">
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                        </div>
+                        <span>AI is thinking...</span>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
+    
+    <script src="config.js"></script>
+    <script src="ai-assistant.js"></script>
 </body>
 </html>
